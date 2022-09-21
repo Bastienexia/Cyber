@@ -1,21 +1,21 @@
 import { Request, Response } from "express-serve-static-core";
-import { RecetteModel } from "~~/Model/model";
+import { ProcedeModel } from "~~/Model/model";
 
 require("dotenv").config();
 
 const jwt = require("jsonwebtoken");
 const router = require("express").Router();
 
-router.post("/createRecette", async (req: Request, res: Response) => {
-  const isExistingRecette = await RecetteModel.findOne({ name: req.body.name });
-  if (isExistingRecette) {
+router.post("/createprocede", async (req: Request, res: Response) => {
+  const isExistingProcede = await ProcedeModel.findOne({ name: req.body.name });
+  if (isExistingProcede) {
     return res
       .status(400)
       .json({ error: "A model with this named already exist" });
   }
 
-  const RecetteCreate = new RecetteModel(req.body);
-  RecetteCreate.save()
+  const ProcedeCreate = new ProcedeModel(req.body);
+  ProcedeCreate.save()
     .then(() => {
       res.status(201).json({ message: "Model created !" });
     })
@@ -27,8 +27,8 @@ router.post("/createRecette", async (req: Request, res: Response) => {
     });
 });
 
-router.get("/getModel/:name", async (req: Request, res: Response) => {
-  const model = await RecetteModel.findOne({ name: req.params.name });
+router.get("/getprocede/:name", async (req: Request, res: Response) => {
+  const model = await ProcedeModel.findOne({ name: req.params.name });
   if (!model) {
     return res.status(400).json({ error: "This model does not exist." });
   }
@@ -37,7 +37,7 @@ router.get("/getModel/:name", async (req: Request, res: Response) => {
 });
 
 router.put("/modify/:name", async (req: Request, res: Response) => {
-  const model = await RecetteModel.findOne({ name: req.params.name });
+  const model = await ProcedeModel.findOne({ name: req.params.name });
 
   if (!model) {
     return res.status(400).json({ error: "Model not found!" });
@@ -45,16 +45,19 @@ router.put("/modify/:name", async (req: Request, res: Response) => {
   try{
     model.set(req.body.modelInfos);
     model.save().then(() => res.status(200).json({ message: "Model edited!" }));
-  }  
+  } 
   catch(error: any) {
     res.status(400).json({
       message: "An error has occured while updating your model.",
     });
   };
+
+  
+
 });
 
 router.delete("/delete/:name", async (req: Request, res: Response) => {
-  const model = await RecetteModel.findOne({ name: req.params.name });
+  const model = await ProcedeModel.findOne({ name: req.params.name });
   if (!model) {
     return res.status(400).json({ error: "Model not found!" });
   }
