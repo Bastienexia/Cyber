@@ -18,4 +18,4 @@ app.use(express.json());
 
 app.use("/api/user", authRouter);
 
-app.listen(3000, () => console.log("Server up and running"));
+app.listen(3001, () => console.log("Server up and running"));

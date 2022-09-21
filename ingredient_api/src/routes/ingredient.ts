@@ -6,8 +6,10 @@ require("dotenv").config();
 const jwt = require("jsonwebtoken");
 const router = require("express").Router();
 
-router.post("/createingredient", async (req: Request, res: Response) => {
-  const isExistingIngredient = await IngredientModel.findOne({ name: req.body.name });
+router.post("/createIngredient", async (req: Request, res: Response) => {
+  const isExistingIngredient = await IngredientModel.findOne({
+    name: req.body.name,
+  });
   if (isExistingIngredient) {
     return res
       .status(400)
@@ -36,24 +38,31 @@ router.get("/getIngredient/:name", async (req: Request, res: Response) => {
   return res.status(200).json(model);
 });
 
+router.get("/getAllIngredients", async (req: Request, res: Response) => {
+  const ingredients = await IngredientModel.find();
+  if (!ingredients) {
+    return res
+      .status(400)
+      .json({ error: "An error has occured, please try later" });
+  }
+
+  res.status(200).json(ingredients);
+});
+
 router.put("/modify/:name", async (req: Request, res: Response) => {
   const model = await IngredientModel.findOne({ name: req.params.name });
 
   if (!model) {
     return res.status(400).json({ error: "Model not found!" });
   }
-  try{
+  try {
     model.set(req.body.modelInfos);
     model.save().then(() => res.status(200).json({ message: "Model edited!" }));
-  } 
-  catch(error: any) {
+  } catch (error: any) {
     res.status(400).json({
       message: "An error has occured while updating your model.",
     });
-  };
-
-  
-
+  }
 });
 
 router.delete("/delete/:name", async (req: Request, res: Response) => {
