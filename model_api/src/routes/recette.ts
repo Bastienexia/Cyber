@@ -41,6 +41,18 @@ router.post("/createRecette", async (req: Request, res: Response) => {
     });
 });
 
+router.get("/getAllModel/", async (req: Request, res:Response) => {
+  const model = await RecetteModel.find();
+  const array = new Array;
+  if(!model){
+    return res.status(400).json({ error: "There is no model"});
+  }
+  model.forEach(function (value){
+    array.push(value.name);
+  })
+  return res.status(200).json(array);
+})
+
 router.get("/getModel/:name", async (req: Request, res: Response) => {
   const model = await RecetteModel.findOne({ name: req.params.name });
   if (!model) {
