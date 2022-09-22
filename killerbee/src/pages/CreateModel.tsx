@@ -13,6 +13,8 @@ import {
   FormControl,
 } from "@mui/material";
 
+let modelIngredients: any[] = [];
+
 const CreateModel = () => {
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
@@ -20,8 +22,9 @@ const CreateModel = () => {
   const [gamme, setGamme] = useState("");
   const [ingredientsName, setIngredientsName] = useState("");
   const [ingredientsGrammage, setIngredientsGrammage] = useState("");
-  let modelIngredients: any[] = [];
+
   const [allIngredients, setAllIngredients] = useState([]);
+  let temp: any;
 
   useEffect(() => {
     getAllIngredients(setAllIngredients);
@@ -32,7 +35,13 @@ const CreateModel = () => {
       name: ingredientsName,
       grammage: ingredientsGrammage,
     };
-    modelIngredients = [...modelIngredients, ingredientObject];
+
+    modelIngredients.push({
+      name: ingredientsName,
+      grammage: ingredientsGrammage,
+    });
+    setIngredientsName("");
+    setIngredientsGrammage("");
     console.log(modelIngredients);
   }
 
