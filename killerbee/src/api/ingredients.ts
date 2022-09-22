@@ -1,28 +1,43 @@
 import axios from "axios";
-import { resolve } from "path";
 
 const globalUrl = "http://localhost:3002/api/ingredient";
-export const getAllIngredients = () => {
+export const getAllIngredients: any = () => {
   axios
     .get(globalUrl + "/getAllIngredients")
     .then((response) => {
       return response.data;
     })
-    .catch((error: Error) => {
+    .catch((error) => {
       console.log("Error : ", error);
     });
 };
 
-export const createIngredient = (ingredient: object) => {
+export const getIngredient: any = (name: string) => {
+  axios
+    .get(globalUrl + "/getIngredient/" + name)
+    .then((response) => {
+      return response?.data;
+    })
+    .catch((error) => console.log(error));
+};
+
+export const createIngredient: any = (ingredient: object) => {
   axios
     .post(globalUrl + "/createIngredient", ingredient)
     .then((response) => console.log(response))
-    .catch((error: Error) => console.log(error));
+    .catch((error) => console.log(error));
 };
 
-export const editIngredient = (name: string, ingredient: object) => {
+export const editIngredient: any = (name: string, ingredient: object) => {
   axios
     .put(globalUrl + "/modify/" + name, ingredient)
     .then((response) => console.log(response))
-    .catch((error: Error) => console.log(error));
+    .catch((error) => console.log(error));
+};
+
+export const deleteIngredient: any = (name: string) => {
+  axios
+    .delete(globalUrl + "/delete/" + name)
+    .then((response) => console.log(response))
+    .catch((error) => console.log(error));
 };

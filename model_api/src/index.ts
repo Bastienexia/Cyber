@@ -19,7 +19,7 @@ app.use(express.json());
 
 app.use("/api/recette", recetteRouter);
 
-app.listen(3002, () => console.log("Server up and running"));
+app.listen(3003, () => console.log("Server up and running"));
 
 const uri = "mongodb://127.0.0.1:27017";
 

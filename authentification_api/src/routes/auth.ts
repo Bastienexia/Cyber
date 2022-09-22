@@ -47,15 +47,13 @@ router.post("/login", async (req: Request, res: Response) => {
   const userToken = {
     id: user.id,
     email: user.email,
-    teamId: user.teamId,
-    isTeamAdmin: user.isTeamAdmin,
   };
 
   const token = jwt.sign(userToken, process.env.ACCESS_TOKEN_SECRET, {
-    expiresIn: "1d",
+    expiresIn: "1h",
   });
 
-  res.header("auth-token", token).json({ token: token });
+  res.header("auth-token", token).json({ token: token, expiresAt: Date.now() });
 });
 
 router.put("/edit", authenticateToken, async (req: Request, res: Response) => {

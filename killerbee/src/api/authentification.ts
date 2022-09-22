@@ -9,8 +9,10 @@ export const Connexion = (email: string, password: string) => {
       email: email,
       password: password,
     })
-    .then((response: any) =>
-      localStorage.setItem("accessToken", response?.data?.token)
-    )
+    .then((response: any) => {
+      console.log("data", response?.data);
+      localStorage.setItem("accessToken", response?.data?.token);
+      localStorage.setItem("accessTokenTime", response?.data?.expiresAt);
+    })
     .catch((error: Error) => console.log("Error : ", error));
 };

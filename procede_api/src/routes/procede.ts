@@ -1,6 +1,6 @@
 import { Request, Response } from "express-serve-static-core";
 import { ProcedeModel } from "~~/Model/model";
-import * as CryptoJS from 'crypto-js';  
+import * as CryptoJS from "crypto-js";
 
 require("dotenv").config();
 
@@ -17,9 +17,18 @@ router.post("/createprocede", async (req: Request, res: Response) => {
   }
 
   const ProcedeCreate = new ProcedeModel(req.body);
-  ProcedeCreate.modele_freezbe = CryptoJS.AES.encrypt(ProcedeCreate.modele_freezbe, encPassword).toString(); 
-  ProcedeCreate.tests = CryptoJS.AES.encrypt(ProcedeCreate.tests, encPassword).toString(); 
-  ProcedeCreate.description = CryptoJS.AES.encrypt(req.body.description, encPassword).toString();
+  ProcedeCreate.modele_freezbe = CryptoJS.AES.encrypt(
+    ProcedeCreate.modele_freezbe,
+    encPassword
+  ).toString();
+  ProcedeCreate.tests = CryptoJS.AES.encrypt(
+    ProcedeCreate.tests,
+    encPassword
+  ).toString();
+  ProcedeCreate.description = CryptoJS.AES.encrypt(
+    req.body.description,
+    encPassword
+  ).toString();
 
   ProcedeCreate.save()
     .then(() => {
@@ -42,15 +51,15 @@ router.get("/getprocede/:name", async (req: Request, res: Response) => {
   return res.status(200).json(model);
 });
 
-router.get("/getAllProcede/", async (req: Request, res: Response) => {
+router.get("/getAllProcede", async (req: Request, res: Response) => {
   const model = await ProcedeModel.find();
-  const array = new Array;
-  if(!model){
-    return res.status(400).json({ error: "There is no procede"});
+  const array = new Array();
+  if (!model) {
+    return res.status(400).json({ error: "There is no procede" });
   }
-  model.forEach(function (value){
+  model.forEach(function (value: any) {
     array.push(value.name);
-  })
+  });
   return res.status(200).json(array);
 });
 
@@ -60,21 +69,23 @@ router.put("/modify/:name", async (req: Request, res: Response) => {
   if (!model) {
     return res.status(400).json({ error: "Model not found!" });
   }
-  try{
+  try {
     model.set(req.body.modelInfos);
-    model.modele_freezbe = CryptoJS.AES.encrypt(model.modele_freezbe, encPassword).toString(); 
-    model.tests = CryptoJS.AES.encrypt(model.tests, encPassword).toString(); 
-    model.description = CryptoJS.AES.encrypt(req.body.modelInfos.description, encPassword).toString();
+    model.modele_freezbe = CryptoJS.AES.encrypt(
+      model.modele_freezbe,
+      encPassword
+    ).toString();
+    model.tests = CryptoJS.AES.encrypt(model.tests, encPassword).toString();
+    model.description = CryptoJS.AES.encrypt(
+      req.body.modelInfos.description,
+      encPassword
+    ).toString();
     model.save().then(() => res.status(200).json({ message: "Model edited!" }));
-  } 
-  catch(error: any) {
+  } catch (error: any) {
     res.status(400).json({
       message: "An error has occured while updating your model.",
     });
-  };
-
-  
-
+  }
 });
 
 router.delete("/delete/:name", async (req: Request, res: Response) => {
