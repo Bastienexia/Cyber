@@ -11,20 +11,20 @@ export const createProcede: any = (procede: object) => {
     .catch((error) => console.log(error));
 };
 
-export const getProcede: any = (name: string) => {
+export const getProcede: any = (name: string, setProcede: any) => {
   axios
     .get(globalUrl + "/getprocede/" + name)
     .then((response) => {
-      return response;
+      setProcede(response?.data);
     })
     .catch((error) => console.log(error));
 };
 
-export const getAllProcede: any = () => {
+export const getAllProcede: any = (setProcede: any) => {
   axios
     .get(globalUrl + "/getAllProcede")
     .then((response) => {
-      return response;
+      setProcede(response?.data);
     })
     .catch((error) => console.log(error));
 };

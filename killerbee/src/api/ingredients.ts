@@ -1,22 +1,23 @@
 import axios from "axios";
 
 const globalUrl = "http://localhost:3002/api/ingredient";
-export const getAllIngredients: any = () => {
+
+export function getAllIngredients(setIngredient: any): any {
   axios
     .get(globalUrl + "/getAllIngredients")
     .then((response) => {
-      return response.data;
+      setIngredient(response?.data);
     })
     .catch((error) => {
       console.log("Error : ", error);
     });
-};
+}
 
-export const getIngredient: any = (name: string) => {
+export const getIngredient: any = (name: string, setIngredient: any) => {
   axios
     .get(globalUrl + "/getIngredient/" + name)
     .then((response) => {
-      return response?.data;
+      setIngredient(response?.data);
     })
     .catch((error) => console.log(error));
 };

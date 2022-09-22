@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const globalUrl = "http://localhost:3003/api/recette/";
+const globalUrl = "http://localhost:3003/api/recette";
 
 export const createModel: any = (recette: object) => {
   axios
@@ -11,20 +11,20 @@ export const createModel: any = (recette: object) => {
     .catch((error) => console.log(error));
 };
 
-export const getModel: any = (name: string) => {
+export const getModel: any = (name: string, setModel: any) => {
   axios
     .post(globalUrl + "/getModel/" + name)
     .then((response) => {
-      return response;
+      setModel(response?.data);
     })
     .catch((error) => console.log(error));
 };
 
-export const getAllModel: any = () => {
+export const getAllModel: any = (setModel: any) => {
   axios
     .get(globalUrl + "/getAllModel")
     .then((response) => {
-      return response;
+      setModel(response?.data);
     })
     .catch((error) => console.log(error));
 };

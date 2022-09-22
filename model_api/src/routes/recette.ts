@@ -18,7 +18,7 @@ router.post("/createRecette", async (req: Request, res: Response) => {
   }
 
   const RecetteCreate = new RecetteModel(req.body);
-  RecetteCreate.puht = CryptoJS.AES.encrypt(
+  /*RecetteCreate.puht = CryptoJS.AES.encrypt(
     RecetteCreate.puht,
     password
   ).toString();
@@ -37,7 +37,7 @@ router.post("/createRecette", async (req: Request, res: Response) => {
       req.body.description,
       password
     ).toString();
-  }
+  }*/
   RecetteCreate.save()
     .then(() => {
       res.status(201).json({ message: "Model created !" });
@@ -52,14 +52,11 @@ router.post("/createRecette", async (req: Request, res: Response) => {
 
 router.get("/getAllModel", async (req: Request, res: Response) => {
   const model = await RecetteModel.find();
-  const array = new Array();
   if (!model) {
     return res.status(400).json({ error: "There is no model" });
   }
-  model.forEach(function (value) {
-    array.push(value.name);
-  });
-  return res.status(200).json(array);
+
+  return res.status(200).json(model);
 });
 
 router.get("/getModel/:name", async (req: Request, res: Response) => {

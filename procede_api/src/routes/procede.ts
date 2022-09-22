@@ -53,14 +53,11 @@ router.get("/getprocede/:name", async (req: Request, res: Response) => {
 
 router.get("/getAllProcede", async (req: Request, res: Response) => {
   const model = await ProcedeModel.find();
-  const array = new Array();
   if (!model) {
     return res.status(400).json({ error: "There is no procede" });
   }
-  model.forEach(function (value: any) {
-    array.push(value.name);
-  });
-  return res.status(200).json(array);
+
+  return res.status(200).json(model);
 });
 
 router.put("/modify/:name", async (req: Request, res: Response) => {
