@@ -41,6 +41,7 @@ router.post("/login", async (req: Request, res: Response) => {
   }
 
   if (user.password !== req.body.password) {
+    user.accessDeniedCount ++;
     return res.status(400).json({ error: "Email or password incorrect." });
   }
 
@@ -52,6 +53,8 @@ router.post("/login", async (req: Request, res: Response) => {
   const token = jwt.sign(userToken, process.env.ACCESS_TOKEN_SECRET, {
     expiresIn: "1h",
   });
+
+  user.accessDeniedCount = 0;
 
   res.header("auth-token", token).json({ token: token, expiresAt: Date.now() });
 });
