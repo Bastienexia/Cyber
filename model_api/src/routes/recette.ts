@@ -2,6 +2,8 @@ import { Request, Response } from "express-serve-static-core";
 import { RecetteModel } from "~~/Model/model";
 import * as CryptoJS from "crypto-js";
 import { array } from "joi";
+import { Schema, model } from "mongoose";
+import { format } from "path";
 
 require("dotenv").config();
 
@@ -18,7 +20,7 @@ router.post("/createRecette", async (req: Request, res: Response) => {
   }
 
   const RecetteCreate = new RecetteModel(req.body);
-  /*RecetteCreate.puht = CryptoJS.AES.encrypt(
+  RecetteCreate.puht = CryptoJS.AES.encrypt(
     RecetteCreate.puht,
     password
   ).toString();
@@ -26,18 +28,17 @@ router.post("/createRecette", async (req: Request, res: Response) => {
     RecetteCreate.gamme,
     password
   ).toString();
-  const array = new Array();
-  RecetteCreate.ingredients.forEach(function (value) {
-    value = CryptoJS.AES.encrypt(value, password).toString();
-    array.push(value);
+  RecetteCreate.ingredients.map((ingredient) => {
+    ingredient.name = CryptoJS.AES.encrypt(ingredient.name, password).toString();
+    ingredient.grammage = CryptoJS.AES.encrypt(ingredient.grammage, password).toString();
   });
-  RecetteCreate.ingredients = array;
   if (req.body.description) {
     RecetteCreate.description = CryptoJS.AES.encrypt(
       req.body.description,
       password
     ).toString();
-  }*/
+  }
+  
   RecetteCreate.save()
     .then(() => {
       res.status(201).json({ message: "Model created !" });
@@ -78,12 +79,11 @@ router.put("/modify/:name", async (req: Request, res: Response) => {
     model.set(req.body.modelInfos);
     model.puht = CryptoJS.AES.encrypt(model.puht, password).toString();
     model.gamme = CryptoJS.AES.encrypt(model.gamme, password).toString();
-    const array = new Array();
-    model.ingredients.forEach(function (value) {
-      value = CryptoJS.AES.encrypt(value, password).toString();
-      array.push(value);
+    const map = new Map<string, string>();
+    model.ingredients.map((ingredient) => {
+      ingredient.name = CryptoJS.AES.encrypt(ingredient.name, password).toString();
+      ingredient.grammage = CryptoJS.AES.encrypt(ingredient.grammage, password).toString();
     });
-    model.ingredients = array;
     if (req.body.modelInfos.description) {
       model.description = CryptoJS.AES.encrypt(
         req.body.description,
