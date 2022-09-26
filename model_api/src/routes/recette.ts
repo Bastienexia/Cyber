@@ -6,7 +6,7 @@ require("dotenv").config();
 
 const jwt = require("jsonwebtoken");
 const router = require("express").Router();
-const password = "Password";
+const password = "Zq4t7w!z%C*F-J@NcRfUjXn2r5u8x/A?";
 
 router.post("/createRecette", async (req: Request, res: Response) => {
   const isExistingRecette = await RecetteModel.findOne({ name: req.body.name });
