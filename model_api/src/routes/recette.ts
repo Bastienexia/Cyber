@@ -1,9 +1,6 @@
 import { Request, Response } from "express-serve-static-core";
 import { RecetteModel } from "~~/Model/model";
 import * as CryptoJS from "crypto-js";
-import { array } from "joi";
-import { Schema, model } from "mongoose";
-import { format } from "path";
 
 require("dotenv").config();
 
@@ -56,8 +53,11 @@ router.get("/getAllModel", async (req: Request, res: Response) => {
   if (!model) {
     return res.status(400).json({ error: "There is no model" });
   }
-
-  return res.status(200).json(model);
+  const namelist = new Array<string>;
+  model.forEach(function (value){
+    namelist.push(value.name);
+  });
+  return res.status(200).json(namelist);
 });
 
 router.get("/getModel/:name", async (req: Request, res: Response) => {

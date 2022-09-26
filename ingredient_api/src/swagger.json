@@ -1,0 +1,99 @@
+{
+    "swagger" : "2.0",
+    "info" : {
+        "version" : "1.0.0",
+        "title" : "KillerBee",
+        "description" : "API DOC",
+        "license" : {
+            "name" : "MIT",
+            "url" : "https://opensource.org/licenses/MIT"
+        }
+    },
+    "paths" : {
+        "/createIngredient" : {
+            "post" : {
+                "tags" : ["createIngredient"],
+                "summary" : "Create a new ingredient", 
+                "parameters" : [
+                    {
+                        "in" : "body",
+                        "name" : "body",
+                        "schema" : {
+                            "$ref" : "#definitions/Ingredient"
+                        }
+                    }
+                ]
+            }
+        },
+        "/getAllIngredient" : {
+            "get" : {
+                "tags" : ["getAllIngredient"],
+                "summary" : "Get all the ingredient name", 
+                "responses" : {
+                    "200" : {
+                        "description" : "OK",
+                        "schema" : {
+                            "$ref" : "#definitions/OK"
+                        }
+                    }
+                }
+            }
+        },
+        "/getIngredient/:name" : {
+            "get" : {
+                "tags" : ["getIngredient"],
+                "summary" : "Get information about a ingredient",
+                "responses" : {
+                    "200" : {
+                        "description" : "OK",
+                        "schema" : {
+                            "$ref" : "#definitions/Ingredient"
+                        }
+                    }
+                }
+            }
+        },
+        "/modify/:name" : {
+            "put" : {
+                "tags" : ["modifyIngredient"],
+                "summary" : "Modigy an existing ingredient",
+                "parameters" : [
+                    {
+                        "in" : "body",
+                        "name" : "body",
+                        "schema" : {
+                            "$ref" : "#definitions/Put"
+                        }
+                    }
+                ]
+            }
+        },
+        "/delete/:name" : {
+            "delete" : {
+                "tags" : ["deleteIngredient"],
+                "summary" : "Delete an existing ingredient"
+            }
+        }
+    },
+
+    "definitions" : {
+        "Ingredient" : {
+            "properties" : {
+                "name": { "type": "string"},
+                "description": { "type": "string" }
+            }
+        },
+        "OK" : {
+            "properties" : {
+                "name": { "type": "string"}
+            }
+        },
+        "Put" : {
+            "properties" : {
+                "modelInfos" : {
+                    "$ref" : "#definitions/Ingredient"
+                }
+            }
+        }
+    }
+}

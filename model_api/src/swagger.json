@@ -1,0 +1,102 @@
+{
+    "swagger" : "2.0",
+    "info" : {
+        "version" : "1.0.0",
+        "title" : "KillerBee",
+        "description" : "API DOC",
+        "license" : {
+            "name" : "MIT",
+            "url" : "https://opensource.org/licenses/MIT"
+        }
+    },
+    "paths" : {
+        "/createRecette" : {
+            "post" : {
+                "tags" : ["createRecette"],
+                "summary" : "Create a new recype", 
+                "parameters" : [
+                    {
+                        "in" : "body",
+                        "name" : "body",
+                        "schema" : {
+                            "$ref" : "#definitions/Recette"
+                        }
+                    }
+                ]
+            }
+        },
+        "/getAllModel" : {
+            "get" : {
+                "tags" : ["getAllModel"],
+                "summary" : "Get all the model name", 
+                "responses" : {
+                    "200" : {
+                        "description" : "OK",
+                        "schema" : {
+                            "$ref" : "#definitions/OK"
+                        }
+                    }
+                }
+            }
+        },
+        "/getModel/:name" : {
+            "get" : {
+                "tags" : ["getModel"],
+                "summary" : "Get information about a model",
+                "responses" : {
+                    "200" : {
+                        "description" : "OK",
+                        "schema" : {
+                            "$ref" : "#definitions/Recette"
+                        }
+                    }
+                }
+            }
+        },
+        "/modify/:name" : {
+            "put" : {
+                "tags" : ["modifyModel"],
+                "summary" : "Modigy an existing model",
+                "parameters" : [
+                    {
+                        "in" : "body",
+                        "name" : "body",
+                        "schema" : {
+                            "$ref" : "#definitions/Put"
+                        }
+                    }
+                ]
+            }
+        },
+        "/delete/:name" : {
+            "delete" : {
+                "tags" : ["deleteModel"],
+                "summary" : "Delete an existing model"
+            }
+        }
+    },
+
+    "definitions" : {
+        "Recette" : {
+            "properties" : {
+                "name": { "type": "string"},
+                "description": { "type": "string" },
+                "puht": { "type": "string" },
+                "gamme": { "type": "string" },
+                "ingredients": { "type": "array" }
+            }
+        },
+        "OK" : {
+            "properties" : {
+                "name": { "type": "string"}
+            }
+        },
+        "Put" : {
+            "properties" : {
+                "modelInfos" : {
+                    "$ref" : "#definitions/Recette"
+                }
+            }
+        }
+    }
+}

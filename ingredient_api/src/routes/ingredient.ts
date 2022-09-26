@@ -1,10 +1,12 @@
 import { Request, Response } from "express-serve-static-core";
 import { IngredientModel } from "~~/Model/model";
+import * as CryptoJS from "crypto-js";
 
 require("dotenv").config();
 
 const jwt = require("jsonwebtoken");
 const router = require("express").Router();
+const password = "Password";
 
 router.post("/createIngredient", async (req: Request, res: Response) => {
   const isExistingIngredient = await IngredientModel.findOne({
@@ -17,6 +19,9 @@ router.post("/createIngredient", async (req: Request, res: Response) => {
   }
 
   const IngredientCreate = new IngredientModel(req.body);
+  if(IngredientCreate.description){
+    IngredientCreate.description = CryptoJS.AES.encrypt(IngredientCreate.description, password).toString();
+  }
   IngredientCreate.save()
     .then(() => {
       res.status(201).json({ message: "Model created !" });
@@ -44,9 +49,12 @@ router.get("/getAllIngredients", async (req: Request, res: Response) => {
     return res
       .status(400)
       .json({ error: "An error has occured, please try later" });
-  }
-
-  res.status(200).json(ingredients);
+  }  
+  const namelist = new Array<string>;
+  ingredients.forEach(function (value){
+    namelist.push(value.name);
+  });
+  res.status(200).json(namelist);
 });
 
 router.put("/modify/:name", async (req: Request, res: Response) => {
@@ -57,6 +65,9 @@ router.put("/modify/:name", async (req: Request, res: Response) => {
   }
   try {
     model.set(req.body.modelInfos);
+    if(model.description){
+      model.description = CryptoJS.AES.encrypt(model.description, password).toString();
+    }
     model.save().then(() => res.status(200).json({ message: "Model edited!" }));
   } catch (error: any) {
     res.status(400).json({

@@ -56,8 +56,11 @@ router.get("/getAllProcede", async (req: Request, res: Response) => {
   if (!model) {
     return res.status(400).json({ error: "There is no procede" });
   }
-
-  return res.status(200).json(model);
+  const namelist = new Array<string>;
+  model.forEach(function (value){
+    namelist.push(value.name);
+  });
+  return res.status(200).json(namelist);
 });
 
 router.put("/modify/:name", async (req: Request, res: Response) => {
