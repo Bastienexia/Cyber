@@ -1,12 +1,13 @@
 import React from "react";
 import { useState, useEffect } from "react";
-import { getAllIngredients, createModel } from "../api";
+import { useParams } from "react-router-dom";
+import { getModel, getAllIngredients, editModel } from "../api";
 import {
   Box,
   Stack,
   Typography,
-  TextField,
   Button,
+  TextField,
   Select,
   SelectChangeEvent,
   MenuItem,
@@ -16,25 +17,43 @@ import {
 
 let modelIngredients: any[] = [];
 
-const CreateModel = () => {
+const DetailModel = () => {
+  const [model, setModel] = useState<null | {
+    name: string;
+    description: string;
+    puht: string;
+    gamme: string;
+    ingredients: any;
+  }>();
+  const [allIngredients, setAllIngredients] = useState([]);
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [puht, setPuht] = useState("");
   const [gamme, setGamme] = useState("");
   const [ingredientsName, setIngredientsName] = useState("");
   const [ingredientsGrammage, setIngredientsGrammage] = useState("");
-
-  const [allIngredients, setAllIngredients] = useState([]);
-  const [listIngredients, setListIngredients] = useState([]);
+  const [listIngredients, setListIngredients] = useState<any[]>([]);
+  const params = useParams();
 
   useEffect(() => {
+    if (!params) return;
+    getModel(params?.name, setModel);
     getAllIngredients(setAllIngredients);
-  }, []);
+  }, [params]);
 
   useEffect(() => {
-    //@ts-ignore
+    if (!model) return;
+    setName(model?.name);
+    setDescription(model?.description);
+    setPuht(model?.puht);
+    setGamme(model?.gamme);
+    modelIngredients = model?.ingredients;
+  }, [model]);
+
+  useEffect(() => {
+    if (!modelIngredients) return;
     setListIngredients(modelIngredients);
-  }, []);
+  }, [modelIngredients]);
 
   function addIngredient() {
     modelIngredients.push({
@@ -45,15 +64,14 @@ const CreateModel = () => {
     setIngredientsGrammage("");
   }
 
-  function create() {
-    const model = {
+  function edit() {
+    editModel({
       name: name,
       description: description,
       puht: puht,
       gamme: gamme,
       ingredients: listIngredients,
-    };
-    createModel(model);
+    });
   }
 
   function deleteIngredient(index: any) {
@@ -70,24 +88,27 @@ const CreateModel = () => {
       sx={{ width: "80vw", marginLeft: "10vw" }}
     >
       <Stack alignItems="center">
-        <Typography variant="h3">Créer un model</Typography>
-        <Button onClick={() => console.log(listIngredients)}>show</Button>
+        <Typography variant="h6">Model</Typography>
         <TextField
           label="Nom du model"
           value={name}
           onChange={(e) => setName(e?.target?.value)}
         />
         <TextField
-          label="Description de l'ingrédient"
+          label="Description"
           value={description}
           onChange={(e) => setDescription(e?.target?.value)}
         />
         <TextField
-          label="puht"
+          label="PUHT"
           value={puht}
           onChange={(e) => setPuht(e?.target?.value)}
         />
-
+        <TextField
+          label="Gamme"
+          value={gamme}
+          onChange={(e) => setGamme(e?.target?.value)}
+        />
         <FormControl variant="standard" sx={{ m: 1, minWidth: 120 }}>
           <InputLabel id="demo-simple-select-standard-label">Gamme</InputLabel>
           <Select
@@ -120,7 +141,9 @@ const CreateModel = () => {
                 sx={{ width: "14vw" }}
               >
                 {allIngredients?.map((element: any) => (
-                  <MenuItem value={element.name}>{element.name}</MenuItem>
+                  <MenuItem key={element?.name} value={element.name}>
+                    {element.name}
+                  </MenuItem>
                 ))}
               </Select>
             </FormControl>
@@ -130,17 +153,7 @@ const CreateModel = () => {
               onChange={(e) => setIngredientsGrammage(e?.target?.value)}
             />
           </Stack>
-          <Button
-            sx={{ height: "5vh" }}
-            variant="contained"
-            onClick={() => addIngredient()}
-          >
-            Ajouter l'ingrédient
-          </Button>
         </Stack>
-        <Button variant="contained" onClick={() => create()}>
-          Créer
-        </Button>
       </Stack>
       <Stack alignItems="center" spacing={2}>
         {listIngredients?.map((element: any, index) => (
@@ -168,4 +181,4 @@ const CreateModel = () => {
   );
 };
 
-export default CreateModel;
+export default DetailModel;

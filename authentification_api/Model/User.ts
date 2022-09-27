@@ -29,13 +29,13 @@ const User = sequelize.define("user", {
     type: DataTypes.STRING,
     allowNull: false,
   },
-  accessDeniedCount:{
+  accessDeniedCount: {
     type: DataTypes.INTEGER,
-    allowNull: false,
     default: 0,
   },
-  isActive:{
-    type: Boolean,
+  isActive: {
+    type: DataTypes.BOOLEAN,
+    default: true,
   },
 });
 

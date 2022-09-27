@@ -19,8 +19,11 @@ router.post("/createIngredient", async (req: Request, res: Response) => {
   }
 
   const IngredientCreate = new IngredientModel(req.body);
-  if(IngredientCreate.description){
-    IngredientCreate.description = CryptoJS.AES.encrypt(IngredientCreate.description, password).toString();
+  if (IngredientCreate.description) {
+    IngredientCreate.description = CryptoJS.AES.encrypt(
+      IngredientCreate.description,
+      password
+    ).toString();
   }
   IngredientCreate.save()
     .then(() => {
@@ -49,9 +52,9 @@ router.get("/getAllIngredients", async (req: Request, res: Response) => {
     return res
       .status(400)
       .json({ error: "An error has occured, please try later" });
-  }  
-  const namelist = new Array<string>;
-  ingredients.forEach(function (value){
+  }
+  const namelist = new Array<string>();
+  ingredients.forEach(function (value) {
     namelist.push(value.name);
   });
   res.status(200).json(namelist);
@@ -64,10 +67,14 @@ router.put("/modify/:name", async (req: Request, res: Response) => {
     return res.status(400).json({ error: "Model not found!" });
   }
   try {
-    model.set(req.body.modelInfos);
-    if(model.description){
-      model.description = CryptoJS.AES.encrypt(model.description, password).toString();
+    model.set(req.body);
+    if (model.description) {
+      model.description = CryptoJS.AES.encrypt(
+        model.description,
+        password
+      ).toString();
     }
+
     model.save().then(() => res.status(200).json({ message: "Model edited!" }));
   } catch (error: any) {
     res.status(400).json({

@@ -30,22 +30,24 @@ const GridPage = () => {
         </Link>
         <Grid container spacing={3}>
           {list?.map((element: any) => (
-            <Grid item key={element?.name}>
-              <Box
-                sx={{
-                  width: "20vw",
-                  boxShadow: "2px 0 5px black",
-                  borderRadius: "1vh",
-                  cursor: "pointer",
-                }}
-                key={element?.name}
-              >
-                <Typography key={element?.name} variant="h6">
-                  {element?.name}
-                </Typography>
-                <p key={element?.name}>{element?.description}</p>
-              </Box>
-            </Grid>
+            <Link to={"/detail/" + params?.type + "/" + element?.name}>
+              <Grid item key={element?.name}>
+                <Box
+                  sx={{
+                    width: "20vw",
+                    boxShadow: "2px 0 5px black",
+                    borderRadius: "1vh",
+                    cursor: "pointer",
+                  }}
+                  key={element?.name}
+                >
+                  <Typography key={element?.name} variant="h6">
+                    {element?.name}
+                  </Typography>
+                  <p key={element?.name}>{element?.description}</p>
+                </Box>
+              </Grid>
+            </Link>
           ))}
         </Grid>
       </Stack>

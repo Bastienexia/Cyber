@@ -13,7 +13,7 @@ export const createModel: any = (recette: object) => {
 
 export const getModel: any = (name: string, setModel: any) => {
   axios
-    .post(globalUrl + "/getModel/" + name)
+    .get(globalUrl + "/getModel/" + name)
     .then((response) => {
       setModel(response?.data);
     })
