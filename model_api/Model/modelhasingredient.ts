@@ -3,27 +3,24 @@ const { Sequelize, DataTypes } = require("sequelize");
 //@ts-ignore
 const sequelize = require("../Database");
 
-const Model = sequelize.define("Model", {
-  IdModel: {
+const ModelHasIngredient = sequelize.define("ModelHasIngredient", {
+  IdGrammage: {
     type: DataTypes.INTEGER,
     autoIncrement: true,
     primaryKey: true,
   },
-  name: {
+  grammage: {
     type: DataTypes.STRING,
     allowNull: false,
   },
-  Description: {
-    type: DataTypes.STRING,
-  },
-  puht: {
-    type: DataTypes.STRING,
+  IdIngredient: {
+    type: DataTypes.INTEGER,
     allowNull: false,
   },
-  Gamme: {
-    type: DataTypes.STRING,
+  IdModel: {
+    type: DataTypes.INTEGER,
     allowNull: false,
   },
 });
 
-module.exports = Model;
+module.exports = ModelHasIngredient;

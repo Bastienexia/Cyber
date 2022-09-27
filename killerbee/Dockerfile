@@ -1,7 +1,7 @@
 FROM node:16.15
-WORKDIR /authentification_api
+WORKDIR /killerbee
 COPY . .
 RUN npm install -g typescript
 RUN npm install
-EXPOSE 3001
+EXPOSE 3000
 CMD ["npm", "run", "build"]

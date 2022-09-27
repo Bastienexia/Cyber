@@ -1,10 +1,20 @@
-import { Schema, model } from "mongoose";
+const { Sequelize, DataTypes } = require("sequelize");
+const sequelize = require("../Database");
 
-const IngredientSchema = new Schema({
-  name: { type: String, required: true },
-  description: { type: String, required: false },
+const ingredient = sequelize.define("ingredient", {
+  Idingredient: {
+    type: DataTypes.INTEGER,
+    autoIncrement: true,
+    primaryKey: true,
+  },
+  NomIngredient: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  Description: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
 });
 
-const IngredientModel = model("ingredient", IngredientSchema);
-
-export { IngredientModel };
+module.exports = ingredient;

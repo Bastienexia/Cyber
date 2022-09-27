@@ -1,27 +1,24 @@
 import { Request, Response } from "express-serve-static-core";
-import { ProcedeModel } from "~~/Model/model";
 import * as CryptoJS from "crypto-js";
+const Procede = require("../../Model/model");
 
 require("dotenv").config();
 
 const jwt = require("jsonwebtoken");
 const router = require("express").Router();
-const password  = process.env.KEY;
-
+const password = process.env.KEY;
 
 router.post("/createprocede", async (req: Request, res: Response) => {
-  const isExistingProcede = await ProcedeModel.findOne({ name: req.body.name });
+  const isExistingProcede = await Procede.findOne({
+    where: { name: req.body.name },
+  });
   if (isExistingProcede) {
     return res
       .status(400)
       .json({ error: "A model with this named already exist" });
   }
 
-  const ProcedeCreate = new ProcedeModel(req.body);
-  ProcedeCreate.modele_freezbe = CryptoJS.AES.encrypt(
-    ProcedeCreate.modele_freezbe,
-    password || ""
-  ).toString();
+  const ProcedeCreate = new Procede(req.body);
   ProcedeCreate.tests = CryptoJS.AES.encrypt(
     ProcedeCreate.tests,
     password || ""
@@ -44,7 +41,7 @@ router.post("/createprocede", async (req: Request, res: Response) => {
 });
 
 router.get("/getprocede/:name", async (req: Request, res: Response) => {
-  const model = await ProcedeModel.findOne({ name: req.params.name });
+  const model = await Procede.findOne({ where: { name: req.params.name } });
   if (!model) {
     return res.status(400).json({ error: "This model does not exist." });
   }
@@ -53,31 +50,28 @@ router.get("/getprocede/:name", async (req: Request, res: Response) => {
 });
 
 router.get("/getAllProcede", async (req: Request, res: Response) => {
-  const model = await ProcedeModel.find();
+  const model = await Procede.findAll();
   if (!model) {
     return res.status(400).json({ error: "There is no procede" });
   }
-  const namelist = new Array<string>;
-  model.forEach(function (value){
-    namelist.push(value.name);
+  const namelist = new Array<string>();
+  model.map((procede: any) => {
+    namelist.push(procede.name);
   });
   return res.status(200).json(namelist);
 });
 
 router.put("/modify/:name", async (req: Request, res: Response) => {
-  const model = await ProcedeModel.findOne({ name: req.params.name });
+  const model = await Procede.findOne({ where: { name: req.params.name } });
   if (!model) {
     return res.status(400).json({ error: "Model not found!" });
   }
+
   try {
-    model.set(req.body.modelInfos);
-    model.modele_freezbe = CryptoJS.AES.encrypt(
-      model.modele_freezbe,
-      password || ""
-    ).toString();
+    model.set(req.body);
     model.tests = CryptoJS.AES.encrypt(model.tests, password || "").toString();
     model.description = CryptoJS.AES.encrypt(
-      req.body.modelInfos.description,
+      req.body.description,
       password || ""
     ).toString();
     model.save().then(() => res.status(200).json({ message: "Model edited!" }));
@@ -89,13 +83,13 @@ router.put("/modify/:name", async (req: Request, res: Response) => {
 });
 
 router.delete("/delete/:name", async (req: Request, res: Response) => {
-  const model = await ProcedeModel.findOne({ name: req.params.name });
+  const model = await Procede.findOne({ where: { name: req.params.name } });
   if (!model) {
     return res.status(400).json({ error: "Model not found!" });
   }
 
   model
-    .delete()
+    .destroy()
     .then(() => res.status(200).json({ message: "Model deleted!" }))
     .catch((error: Error) =>
       res.status(400).json({

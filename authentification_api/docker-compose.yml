@@ -1,0 +1,14 @@
+version: "3"
+
+services:
+  api:
+    build:
+      context: .
+    ports:
+      - 3001:3001
+    volumes:
+      - /authentification_api
+    networks:
+      default:
+        aliases:
+          - auth-api.dev

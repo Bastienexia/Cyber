@@ -1,5 +1,6 @@
 import { Request, Response } from "express-serve-static-core";
-import { RecetteModel } from "~~/Model/model";
+const Model = require("../../Model/model");
+const ModelHasIngredient = require("../../Model/modelhasingredient");
 import * as CryptoJS from "crypto-js";
 
 require("dotenv").config();
@@ -9,68 +10,74 @@ const router = require("express").Router();
 const password = process.env.KEY;
 
 router.post("/createRecette", async (req: Request, res: Response) => {
-  const isExistingRecette = await RecetteModel.findOne({ name: req.body.name });
+  const isExistingRecette = await Model.findOne({
+    where: { name: req.body.model.name },
+  });
   if (isExistingRecette) {
     return res
       .status(400)
       .json({ error: "A model with this named already exist" });
   }
 
-  const RecetteCreate = new RecetteModel(req.body);
+  const RecetteCreate = new Model(req.body.model);
   RecetteCreate.puht = CryptoJS.AES.encrypt(
     RecetteCreate.puht,
     password || ""
   ).toString();
-  RecetteCreate.gamme = CryptoJS.AES.encrypt(
-    RecetteCreate.gamme,
+  RecetteCreate.Gamme = CryptoJS.AES.encrypt(
+    RecetteCreate.Gamme,
     password || ""
   ).toString();
-  RecetteCreate.ingredients.map((ingredient) => {
-    ingredient.name = CryptoJS.AES.encrypt(ingredient.name, password || "").toString();
-    ingredient.grammage = CryptoJS.AES.encrypt(ingredient.grammage, password || "").toString();
+
+  RecetteCreate.Description = CryptoJS.AES.encrypt(
+    req.body.Description,
+    password || ""
+  ).toString();
+
+  await RecetteCreate.save();
+  const createdModel = await Model.findOne({
+    where: { name: req.body.model.name },
   });
-  if (req.body.description) {
-    RecetteCreate.description = CryptoJS.AES.encrypt(
-      req.body.description,
-      password || ""
-    ).toString();
-  }
-  
-  RecetteCreate.save()
-    .then(() => {
-      res.status(201).json({ message: "Model created !" });
-    })
-    .catch((error: Error) => {
-      res.status(400).json({
-        message: "An error has occured while created your model.",
-        error: error,
-      });
+  req.body?.ingredients.map((ingredient: any) => {
+    const ingredientCreate = new ModelHasIngredient({
+      IdModel: createdModel.IdModel,
+      IdIngredient: ingredient.IdIngredient,
+      grammage: ingredient.grammage,
     });
+
+    ingredientCreate.save();
+  });
+
+  res.status(201).json({ message: "Model created !" });
 });
 
 router.get("/getAllModel", async (req: Request, res: Response) => {
-  const model = await RecetteModel.find();
+  const model = await Model.findAll();
   if (!model) {
     return res.status(400).json({ error: "There is no model" });
   }
-  const namelist = new Array<string>;
-  model.forEach(function (value){
-    namelist.push(value.name);
+  const namelist = new Array<string>();
+  model.map((model: any) => {
+    namelist.push(model?.name);
   });
   return res.status(200).json(namelist);
 });
 
 router.get("/getModel/:name", async (req: Request, res: Response) => {
-  const model = await RecetteModel.findOne({ name: req.params.name });
+  const model = await Model.findOne({ where: { name: req.params.name } });
   if (!model) {
     return res.status(400).json({ error: "This model does not exist." });
   }
 
-  return res.status(200).json(model);
+  const ingredients = await ModelHasIngredient.findAll({
+    where: { IdModel: model.IdModel },
+  });
+
+  return res.status(200).json({ model, ingredients });
 });
 
 router.put("/modify/:name", async (req: Request, res: Response) => {
-  const model = await RecetteModel.findOne({ name: req.params.name });
+  const model = await Model.findOne({ where: { name: req.params.name } });
 
   if (!model) {
     return res.status(400).json({ error: "Model not found!" });
@@ -78,15 +85,11 @@ router.put("/modify/:name", async (req: Request, res: Response) => {
   try {
     model.set(req.body.modelInfos);
     model.puht = CryptoJS.AES.encrypt(model.puht, password || "").toString();
-    model.gamme = CryptoJS.AES.encrypt(model.gamme, password || "").toString();
-    const map = new Map<string, string>();
-    model.ingredients.map((ingredient) => {
-      ingredient.name = CryptoJS.AES.encrypt(ingredient.name, password || "").toString();
-      ingredient.grammage = CryptoJS.AES.encrypt(ingredient.grammage, password || "").toString();
-    });
-    if (req.body.modelInfos.description) {
-      model.description = CryptoJS.AES.encrypt(
-        req.body.description,
+    model.Gamme = CryptoJS.AES.encrypt(model.Gamme, password || "").toString();
+
+    if (req.body.modelInfos.Description) {
+      model.Description = CryptoJS.AES.encrypt(
+        req.body.Description,
         password || ""
       ).toString();
     }
@@ -99,13 +102,13 @@ router.put("/modify/:name", async (req: Request, res: Response) => {
 });
 
 router.delete("/delete/:name", async (req: Request, res: Response) => {
-  const model = await RecetteModel.findOne({ name: req.params.name });
+  const model = await Model.findOne({ where: { name: req.params.name } });
   if (!model) {
     return res.status(400).json({ error: "Model not found!" });
   }
 
   model
-    .delete()
+    .destroy()
     .then(() => res.status(200).json({ message: "Model deleted!" }))
     .catch((error: Error) =>
       res.status(400).json({
