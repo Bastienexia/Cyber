@@ -6,9 +6,10 @@ require("dotenv").config();
 
 const jwt = require("jsonwebtoken");
 const router = require("express").Router();
+const password  = process.env.KEY;
+
 
 router.post("/createprocede", async (req: Request, res: Response) => {
-  const encPassword = "password";
   const isExistingProcede = await ProcedeModel.findOne({ name: req.body.name });
   if (isExistingProcede) {
     return res
@@ -19,15 +20,15 @@ router.post("/createprocede", async (req: Request, res: Response) => {
   const ProcedeCreate = new ProcedeModel(req.body);
   ProcedeCreate.modele_freezbe = CryptoJS.AES.encrypt(
     ProcedeCreate.modele_freezbe,
-    encPassword
+    password || ""
   ).toString();
   ProcedeCreate.tests = CryptoJS.AES.encrypt(
     ProcedeCreate.tests,
-    encPassword
+    password || ""
   ).toString();
   ProcedeCreate.description = CryptoJS.AES.encrypt(
     req.body.description,
-    encPassword
+    password || ""
   ).toString();
 
   ProcedeCreate.save()
@@ -64,7 +65,6 @@ router.get("/getAllProcede", async (req: Request, res: Response) => {
 });
 
 router.put("/modify/:name", async (req: Request, res: Response) => {
-  const encPassword = "password";
   const model = await ProcedeModel.findOne({ name: req.params.name });
   if (!model) {
     return res.status(400).json({ error: "Model not found!" });
@@ -73,12 +73,12 @@ router.put("/modify/:name", async (req: Request, res: Response) => {
     model.set(req.body.modelInfos);
     model.modele_freezbe = CryptoJS.AES.encrypt(
       model.modele_freezbe,
-      encPassword
+      password || ""
     ).toString();
-    model.tests = CryptoJS.AES.encrypt(model.tests, encPassword).toString();
+    model.tests = CryptoJS.AES.encrypt(model.tests, password || "").toString();
     model.description = CryptoJS.AES.encrypt(
       req.body.modelInfos.description,
-      encPassword
+      password || ""
     ).toString();
     model.save().then(() => res.status(200).json({ message: "Model edited!" }));
   } catch (error: any) {

@@ -6,7 +6,7 @@ require("dotenv").config();
 
 const jwt = require("jsonwebtoken");
 const router = require("express").Router();
-const password = "Password";
+const password = process.env.KEY;
 
 router.post("/createRecette", async (req: Request, res: Response) => {
   const isExistingRecette = await RecetteModel.findOne({ name: req.body.name });
@@ -19,20 +19,20 @@ router.post("/createRecette", async (req: Request, res: Response) => {
   const RecetteCreate = new RecetteModel(req.body);
   RecetteCreate.puht = CryptoJS.AES.encrypt(
     RecetteCreate.puht,
-    password
+    password || ""
   ).toString();
   RecetteCreate.gamme = CryptoJS.AES.encrypt(
     RecetteCreate.gamme,
-    password
+    password || ""
   ).toString();
   RecetteCreate.ingredients.map((ingredient) => {
-    ingredient.name = CryptoJS.AES.encrypt(ingredient.name, password).toString();
-    ingredient.grammage = CryptoJS.AES.encrypt(ingredient.grammage, password).toString();
+    ingredient.name = CryptoJS.AES.encrypt(ingredient.name, password || "").toString();
+    ingredient.grammage = CryptoJS.AES.encrypt(ingredient.grammage, password || "").toString();
   });
   if (req.body.description) {
     RecetteCreate.description = CryptoJS.AES.encrypt(
       req.body.description,
-      password
+      password || ""
     ).toString();
   }
   
@@ -77,17 +77,17 @@ router.put("/modify/:name", async (req: Request, res: Response) => {
   }
   try {
     model.set(req.body.modelInfos);
-    model.puht = CryptoJS.AES.encrypt(model.puht, password).toString();
-    model.gamme = CryptoJS.AES.encrypt(model.gamme, password).toString();
+    model.puht = CryptoJS.AES.encrypt(model.puht, password || "").toString();
+    model.gamme = CryptoJS.AES.encrypt(model.gamme, password || "").toString();
     const map = new Map<string, string>();
     model.ingredients.map((ingredient) => {
-      ingredient.name = CryptoJS.AES.encrypt(ingredient.name, password).toString();
-      ingredient.grammage = CryptoJS.AES.encrypt(ingredient.grammage, password).toString();
+      ingredient.name = CryptoJS.AES.encrypt(ingredient.name, password || "").toString();
+      ingredient.grammage = CryptoJS.AES.encrypt(ingredient.grammage, password || "").toString();
     });
     if (req.body.modelInfos.description) {
       model.description = CryptoJS.AES.encrypt(
         req.body.description,
-        password
+        password || ""
       ).toString();
     }
     model.save().then(() => res.status(200).json({ message: "Model edited!" }));

@@ -10,16 +10,16 @@
         }
     },
     "paths" : {
-        "/createRecette" : {
+        "/createModel" : {
             "post" : {
-                "tags" : ["createRecette"],
-                "summary" : "Create a new recype", 
+                "tags" : ["createModel"],
+                "summary" : "Create a new model", 
                 "parameters" : [
                     {
                         "in" : "body",
                         "name" : "body",
                         "schema" : {
-                            "$ref" : "#definitions/Recette"
+                            "$ref" : "#definitions/Model"
                         }
                     }
                 ]
@@ -47,7 +47,7 @@
                     "200" : {
                         "description" : "OK",
                         "schema" : {
-                            "$ref" : "#definitions/Recette"
+                            "$ref" : "#definitions/Model"
                         }
                     }
                 }
@@ -71,13 +71,18 @@
         "/delete/:name" : {
             "delete" : {
                 "tags" : ["deleteModel"],
-                "summary" : "Delete an existing model"
+                "summary" : "Delete an existing model",
+                "responses" : {
+                    "200" : {
+                        "description" : "OK"
+                    }
+                }
             }
         }
     },
 
     "definitions" : {
-        "Recette" : {
+        "Model" : {
             "properties" : {
                 "name": { "type": "string"},
                 "description": { "type": "string" },
@@ -91,10 +96,15 @@
                 "name": { "type": "string"}
             }
         },
+        "OkDelete" : {
+            "properties" : {
+                "Model deleted!" : {"type" : "string"}
+            }
+        },
         "Put" : {
             "properties" : {
                 "modelInfos" : {
-                    "$ref" : "#definitions/Recette"
+                    "$ref" : "#definitions/Model"
                 }
             }
         }

@@ -71,7 +71,12 @@
         "/delete/:name" : {
             "delete" : {
                 "tags" : ["deleteProcede"],
-                "summary" : "Delete an existing procede"
+                "summary" : "Delete an existing procede",
+                "responses" : {
+                    "200" : {
+                        "description" : "OK"
+                    }
+                }
             }
         }
     },

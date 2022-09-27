@@ -6,7 +6,7 @@ require("dotenv").config();
 
 const jwt = require("jsonwebtoken");
 const router = require("express").Router();
-const password = "Password";
+const password = process.env.KEY;
 
 router.post("/createIngredient", async (req: Request, res: Response) => {
   const isExistingIngredient = await IngredientModel.findOne({
@@ -19,10 +19,11 @@ router.post("/createIngredient", async (req: Request, res: Response) => {
   }
 
   const IngredientCreate = new IngredientModel(req.body);
+
   if (IngredientCreate.description) {
     IngredientCreate.description = CryptoJS.AES.encrypt(
       IngredientCreate.description,
-      password
+      password || ""
     ).toString();
   }
   IngredientCreate.save()
@@ -67,11 +68,11 @@ router.put("/modify/:name", async (req: Request, res: Response) => {
     return res.status(400).json({ error: "Model not found!" });
   }
   try {
-    model.set(req.body);
+    model.set(req.body.modelInfos);
     if (model.description) {
       model.description = CryptoJS.AES.encrypt(
         model.description,
-        password
+        password || ""
       ).toString();
     }
 

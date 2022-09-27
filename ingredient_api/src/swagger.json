@@ -71,7 +71,12 @@
         "/delete/:name" : {
             "delete" : {
                 "tags" : ["deleteIngredient"],
-                "summary" : "Delete an existing ingredient"
+                "summary" : "Delete an existing ingredient",
+                "responses" : {
+                    "200" : {
+                        "description" : "OK"
+                    }
+                }
             }
         }
     },
