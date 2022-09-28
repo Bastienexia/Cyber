@@ -7,6 +7,7 @@ const sequelize = new Sequelize(
   process.env.DBLogin || "sa",
   process.env.DBPassword || "04e2b2ce80",
   {
+    host: process.env.Host,
     dialect: "mssql",
   }
 );

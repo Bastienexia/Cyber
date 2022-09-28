@@ -3,6 +3,7 @@ const router = require("express").Router();
 const User = require("../../Model/User");
 require("dotenv").config();
 
+const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 
 router.post("/register", async (req: Request, res: Response) => {
@@ -14,11 +15,14 @@ router.post("/register", async (req: Request, res: Response) => {
     return res.status(400).json({ error: "This email is already used." });
   }
 
+  const salt = await bcrypt.genSalt(10);
+  const hashPassword = await bcrypt.hash(req.body.password, salt);
+
   const newUser = new User({
     firstName: req.body.firstName,
     lastName: req.body.lastName,
     email: req.body.email,
-    password: req.body.password,
+    password: hashPassword,
   });
 
   const savedUser = await newUser.save().catch((error: any) => {
@@ -40,9 +44,13 @@ router.post("/login", async (req: Request, res: Response) => {
     return res.status(400).json({ error: "Email or password incorrect." });
   }
 
-  if (user.password !== req.body.password) {
-    user.accessDeniedCount ++;
-    return res.status(400).json({ error: "Email or password incorrect." });
+  const validPassword = await bcrypt.compare(req.body.password, user.password);
+  if (!validPassword) {
+    user.accessDeniedCount++;
+    user.save();
+    return res
+      .status(400)
+      .json({ error: "L'email ou le mot de passe est incorrect !" });
   }
 
   const userToken = {

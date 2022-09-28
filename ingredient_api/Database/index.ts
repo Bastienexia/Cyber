@@ -3,10 +3,11 @@ import { Sequelize } from "sequelize";
 require("dotenv").config();
 
 const sequelize = new Sequelize(
-  process.env.DBName || "KillerBeeDB",
-  process.env.DBLogin || "sa",
-  process.env.DBPassword || "04e2b2ce80",
+  process.env.DBName || "",
+  process.env.DBLogin || "",
+  process.env.DBPassword || "",
   {
+    host: process.env.Host,
     dialect: "mssql",
   }
 );
