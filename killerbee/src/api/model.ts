@@ -1,4 +1,7 @@
 import axios from "axios";
+import * as CryptoJS from "crypto-js";
+
+const Key = process.env.REACT_APP_KEY;
 
 const globalUrl = "http://localhost:3003/api/recette";
 const token = localStorage.getItem("accessToken");
@@ -19,10 +22,37 @@ export const createModel: any = (recette: object) => {
 };
 
 export const getModel: any = (name: string, setModel: any) => {
-  axios
-    .get(globalUrl + "/getModel/" + name)
+  axios //@ts-ignore
+    .get(globalUrl + "/getModel/" + name, config)
     .then((response) => {
-      setModel(response?.data);
+      console.log(response.data.model.Gamme);
+      console.log(response.data.model.Description);
+      console.log(Key);
+      console.log(
+        CryptoJS.AES.decrypt(
+          "U2FsdGVkX18rqEOV/HvcD3lFXsZu+a5VJ0nw4DlvIq99bBWQbZr8nHBABwzAhGSP",
+          Key || ""
+        ).toString(CryptoJS.enc.Utf8)
+      );
+      setModel({
+        model: {
+          IdModel: response.data.model.IdModel,
+          name: response.data.model.name,
+          Description: CryptoJS.AES.decrypt(
+            response.data.model.Description,
+            Key || ""
+          ).toString(CryptoJS.enc.Utf8),
+          puht: CryptoJS.AES.decrypt(
+            response.data.model.puht,
+            Key || ""
+          ).toString(CryptoJS.enc.Utf8),
+          Gamme: CryptoJS.AES.decrypt(
+            response.data.model.Gamme,
+            Key || ""
+          ).toString(CryptoJS.enc.Utf8),
+        },
+        ingredients: response?.data?.ingredients,
+      });
     })
     .catch((error) => console.log(error));
 };

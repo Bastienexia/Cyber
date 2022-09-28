@@ -43,6 +43,7 @@ const DetailModel = () => {
   }, [params]);
 
   useEffect(() => {
+    console.log(model);
     if (!model) return;
     setName(model?.model.name);
     setDescription(model?.model.Description);

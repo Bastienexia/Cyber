@@ -1,4 +1,7 @@
 import axios from "axios";
+import * as CryptoJS from "crypto-js";
+
+const Key = process.env.REACT_APP_KEY;
 
 const globalUrl = "http://localhost:3004/api/procede";
 const token = localStorage.getItem("accessToken");
@@ -22,7 +25,26 @@ export const getProcede: any = (name: string, setProcede: any) => {
   axios //@ts-ignore
     .get(globalUrl + "/getprocede/" + name, config)
     .then((response) => {
-      setProcede(response?.data);
+      console.log("KEY", Key);
+      console.log("description", response.data.description);
+      console.log(
+        "déchifrer",
+        CryptoJS.AES.decrypt(response.data.description, Key || "").toString(
+          CryptoJS.enc.Utf8
+        )
+      );
+      setProcede({
+        IdProcede: response.data.IdProcede,
+        name: response.data.name,
+        description: CryptoJS.AES.decrypt(
+          response.data.description,
+          Key || ""
+        ).toString(CryptoJS.enc.Utf8),
+        tests: CryptoJS.AES.decrypt(response.data.tests, Key || "").toString(
+          CryptoJS.enc.Utf8
+        ),
+        IdModel: response.data.IdModel,
+      });
     })
     .catch((error) => console.log(error));
 };

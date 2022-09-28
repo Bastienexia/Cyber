@@ -16,6 +16,9 @@ const DetailIngredient = () => {
   }, [params]);
 
   useEffect(() => {
+    console.log(ingredient);
+  }, [ingredient]);
+  useEffect(() => {
     //@ts-ignore
     setIngredientName(ingredient?.NomIngredient);
     //@ts-ignore

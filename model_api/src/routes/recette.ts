@@ -33,10 +33,11 @@ router.post(
     ).toString();
 
     RecetteCreate.Description = CryptoJS.AES.encrypt(
-      req.body.Description,
+      RecetteCreate.Description,
       password || ""
     ).toString();
 
+    console.log(RecetteCreate);
     await RecetteCreate.save();
     const createdModel = await Model.findOne({
       where: { name: req.body.model.name },

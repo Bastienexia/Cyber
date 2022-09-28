@@ -1,9 +1,21 @@
 import { Sequelize } from "sequelize";
+require("dotenv").config();
 
-const sequelize = new Sequelize("cyberuser", "sa", "04e2b2ce80", {
-  host: "localhost",
-  dialect: "mssql",
-});
+const Database = {
+  DBName: process.env.DBName,
+  DBLogin: process.env.DBLogin,
+  DBPassword: process.env.DBPassword,
+};
+
+const sequelize = new Sequelize(
+  Database.DBName || "",
+  Database.DBLogin || "",
+  Database.DBPassword || "",
+  {
+    host: process.env.Host,
+    dialect: "mssql",
+  }
+);
 
 sequelize.sync();
 

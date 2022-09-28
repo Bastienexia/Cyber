@@ -1,8 +1,15 @@
 import { Sequelize } from "sequelize";
 
-const sequelize = new Sequelize("KillerBeeDB", "sa", "04e2b2ce80", {
-  dialect: "mssql",
-});
+require("dotenv").config();
+
+const sequelize = new Sequelize(
+  process.env.DBName || "KillerBeeDB",
+  process.env.DBLogin || "sa",
+  process.env.DBPassword || "04e2b2ce80",
+  {
+    dialect: "mssql",
+  }
+);
 
 sequelize.sync();
 
