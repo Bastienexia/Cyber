@@ -8,14 +8,14 @@ const jwt = require("jsonwebtoken");
 const router = require("express").Router();
 const password = process.env.KEY;
 
-router.post("/createprocede", async (req: Request, res: Response) => {
+router.post("/createprocede", authenticateToken, async (req: Request, res: Response) => {
   const isExistingProcede = await Procede.findOne({
     where: { name: req.body.name },
   });
   if (isExistingProcede) {
     return res
       .status(400)
-      .json({ error: "A model with this named already exist" });
+      .json({ error: "A procede with this named already exist" });
   }
 
   const ProcedeCreate = new Procede(req.body);
@@ -30,70 +30,70 @@ router.post("/createprocede", async (req: Request, res: Response) => {
 
   ProcedeCreate.save()
     .then(() => {
-      res.status(201).json({ message: "Model created !" });
+      res.status(201).json({ message: "Procede created !" });
     })
     .catch((error: Error) => {
       res.status(400).json({
-        message: "An error has occured while created your model.",
+        message: "An error has occured while created your procede.",
         error: error,
       });
     });
 });
 
-router.get("/getprocede/:name", async (req: Request, res: Response) => {
-  const model = await Procede.findOne({ where: { name: req.params.name } });
-  if (!model) {
-    return res.status(400).json({ error: "This model does not exist." });
+router.get("/getprocede/:name", authenticateToken, async (req: Request, res: Response) => {
+  const procede = await Procede.findOne({ where: { name: req.params.name } });
+  if (!procede) {
+    return res.status(400).json({ error: "This procede does not exist." });
   }
 
-  return res.status(200).json(model);
+  return res.status(200).json(procede);
 });
 
-router.get("/getAllProcede", async (req: Request, res: Response) => {
-  const model = await Procede.findAll();
-  if (!model) {
+router.get("/getAllProcede", authenticateToken, async (req: Request, res: Response) => {
+  const procedeList = await Procede.findAll();
+  if (!procedeList) {
     return res.status(400).json({ error: "There is no procede" });
   }
   const namelist = new Array<string>();
-  model.map((procede: any) => {
+  procedeList.map((procede: any) => {
     namelist.push(procede.name);
   });
   return res.status(200).json(namelist);
 });
 
-router.put("/modify/:name", async (req: Request, res: Response) => {
-  const model = await Procede.findOne({ where: { name: req.params.name } });
-  if (!model) {
-    return res.status(400).json({ error: "Model not found!" });
+router.put("/modify/:name", authenticateToken, async (req: Request, res: Response) => {
+  const procede = await Procede.findOne({ where: { name: req.params.name } });
+  if (!procede) {
+    return res.status(400).json({ error: "Procede not found!" });
   }
 
   try {
-    model.set(req.body);
-    model.tests = CryptoJS.AES.encrypt(model.tests, password || "").toString();
-    model.description = CryptoJS.AES.encrypt(
+    procede.set(req.body);
+    procede.tests = CryptoJS.AES.encrypt(procede.tests, password || "").toString();
+    procede.description = CryptoJS.AES.encrypt(
       req.body.description,
       password || ""
     ).toString();
-    model.save().then(() => res.status(200).json({ message: "Model edited!" }));
+    procede.save().then(() => res.status(200).json({ message: "Procede edited!" }));
   } catch (error: any) {
     res.status(400).json({
-      message: "An error has occured while updating your model.",
+      message: "An error has occured while updating your procede.",
     });
   }
 });
 
-router.delete("/delete/:name", async (req: Request, res: Response) => {
-  const model = await Procede.findOne({ where: { name: req.params.name } });
-  if (!model) {
+router.delete("/delete/:name", authenticateToken, async (req: Request, res: Response) => {
+  const procede = await Procede.findOne({ where: { name: req.params.name } });
+  if (!procede) {
     return res.status(400).json({ error: "Model not found!" });
   }
 
-  model
+  procede
     .destroy()
-    .then(() => res.status(200).json({ message: "Model deleted!" }))
+    .then(() => res.status(200).json({ message: "Procede deleted!" }))
     .catch((error: Error) =>
       res.status(400).json({
-        message: "An error occured while deleting the model!",
+        message: "An error occured while deleting the procede!",
         error: error,
       })
     );

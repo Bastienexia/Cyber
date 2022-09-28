@@ -9,7 +9,7 @@ const jwt = require("jsonwebtoken");
 const router = require("express").Router();
 const password = process.env.KEY;
 
-router.post("/createRecette", async (req: Request, res: Response) => {
+router.post("/createRecette", authenticateToken, async (req: Request, res: Response) => {
   const isExistingRecette = await Model.findOne({
     where: { name: req.body.model.name },
   });
@@ -51,7 +51,7 @@ router.post("/createRecette", async (req: Request, res: Response) => {
   res.status(201).json({ message: "Model created !" });
 });
 
-router.get("/getAllModel", async (req: Request, res: Response) => {
+router.get("/getAllModel", authenticateToken, async (req: Request, res: Response) => {
   const model = await Model.findAll();
   if (!model) {
     return res.status(400).json({ error: "There is no model" });
@@ -63,7 +63,7 @@ router.get("/getAllModel", async (req: Request, res: Response) => {
   return res.status(200).json(namelist);
 });
 
-router.get("/getModel/:name", async (req: Request, res: Response) => {
+router.get("/getModel/:name", authenticateToken, async (req: Request, res: Response) => {
   const model = await Model.findOne({ where: { name: req.params.name } });
   if (!model) {
     return res.status(400).json({ error: "This model does not exist." });
@@ -76,7 +76,7 @@ router.get("/getModel/:name", async (req: Request, res: Response) => {
   return res.status(200).json({ model, ingredients });
 });
 
-router.put("/modify/:name", async (req: Request, res: Response) => {
+router.put("/modify/:name", authenticateToken, async (req: Request, res: Response) => {
   const model = await Model.findOne({ where: { name: req.params.name } });
 
   if (!model) {
@@ -101,7 +101,7 @@ router.put("/modify/:name", async (req: Request, res: Response) => {
   }
 });
 
-router.delete("/delete/:name", async (req: Request, res: Response) => {
+router.delete("/delete/:name", authenticateToken, async (req: Request, res: Response) => {
   const model = await Model.findOne({ where: { name: req.params.name } });
   if (!model) {
     return res.status(400).json({ error: "Model not found!" });

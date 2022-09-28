@@ -7,7 +7,7 @@ const jwt = require("jsonwebtoken");
 const router = require("express").Router();
 const password = process.env.KEY;
 
-router.post("/createIngredient", async (req: Request, res: Response) => {
+router.post("/createIngredient", authenticateToken, async (req: Request, res: Response) => {
   const isExistingIngredient = await Ingredient.findOne({
     where: { NomIngredient: req.body.NomIngredient },
   });
@@ -21,7 +21,6 @@ router.post("/createIngredient", async (req: Request, res: Response) => {
   const IngredientCreate = new Ingredient(req.body);
 
   if (IngredientCreate.Description) {
-    console.log("Tamere");
     IngredientCreate.Description = CryptoJS.AES.encrypt(
       IngredientCreate.Description,
       password || ""
@@ -40,18 +39,18 @@ router.post("/createIngredient", async (req: Request, res: Response) => {
     });
 });
 
-router.get("/getIngredient/:name", async (req: Request, res: Response) => {
-  const model = await Ingredient.findOne({
+router.get("/getIngredient/:name", authenticateToken, async (req: Request, res: Response) => {
+  const ingredient = await Ingredient.findOne({
     where: { NomIngredient: req.params.name },
   });
-  if (!model) {
+  if (!ingredient) {
     return res.status(400).json({ error: "This ingredient does not exist." });
   }
 
-  return res.status(200).json(model);
+  return res.status(200).json(ingredient);
 });
 
-router.get("/getAllIngredients", async (req: Request, res: Response) => {
+router.get("/getAllIngredients", authenticateToken, async (req: Request, res: Response) => {
   const ingredients = await Ingredient.findAll();
   if (!ingredients) {
     return res
@@ -65,24 +64,24 @@ router.get("/getAllIngredients", async (req: Request, res: Response) => {
   res.status(200).json(namelist);
 });
 
-router.put("/modify/:name", async (req: Request, res: Response) => {
-  const model = await Ingredient.findOne({
+router.put("/modify/:name", authenticateToken, async (req: Request, res: Response) => {
+  const ingredient = await Ingredient.findOne({
     where: { NomIngredient: req.params.name },
   });
 
-  if (!model) {
+  if (!ingredient) {
     return res.status(400).json({ error: "Ingredient not found!" });
   }
   try {
-    model.set(req.body);
-    if (model.Description) {
-      model.Description = CryptoJS.AES.encrypt(
-        model.description,
+    ingredient.set(req.body);
+    if (ingredient.Description) {
+      ingredient.Description = CryptoJS.AES.encrypt(
+        ingredient.description,
         password || ""
       ).toString();
     }
 
-    model
+    ingredient
       .save()
       .then(() => res.status(200).json({ message: "Ingredient edited!" }));
   } catch (error: any) {
@@ -92,15 +91,15 @@ router.put("/modify/:name", async (req: Request, res: Response) => {
   }
 });
 
-router.delete("/delete/:name", async (req: Request, res: Response) => {
-  const model = await Ingredient.findOne({
+router.delete("/delete/:name", authenticateToken, async (req: Request, res: Response) => {
+  const ingredient = await Ingredient.findOne({
     where: { NomIngredient: req.params.name },
   });
-  if (!model) {
+  if (!ingredient) {
     return res.status(400).json({ error: "Ingredient not found!" });
   }
 
-  model
+  ingredient
     .destroy()
     .then(() => res.status(200).json({ message: "Ingredient deleted!" }))
     .catch((error: Error) =>
