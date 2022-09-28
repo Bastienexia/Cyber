@@ -19,11 +19,12 @@ let modelIngredients: any[] = [];
 
 const DetailModel = () => {
   const [model, setModel] = useState<null | {
+    model: any;
+    ingredients: Array<any>;
     name: string;
-    description: string;
+    Description: string;
     puht: string;
-    gamme: string;
-    ingredients: any;
+    Gamme: string;
   }>();
   const [allIngredients, setAllIngredients] = useState([]);
   const [name, setName] = useState("");
@@ -43,11 +44,10 @@ const DetailModel = () => {
 
   useEffect(() => {
     if (!model) return;
-    setName(model?.name);
-    setDescription(model?.description);
-    setPuht(model?.puht);
-    setGamme(model?.gamme);
-    modelIngredients = model?.ingredients;
+    setName(model?.model.name);
+    setDescription(model?.model.Description);
+    setPuht(model?.model.puht);
+    setGamme(model?.model.Gamme);
   }, [model]);
 
   useEffect(() => {
@@ -67,10 +67,9 @@ const DetailModel = () => {
   function edit() {
     editModel({
       name: name,
-      description: description,
+      Description: description,
       puht: puht,
-      gamme: gamme,
-      ingredients: listIngredients,
+      Gamme: gamme,
     });
   }
 
@@ -156,7 +155,7 @@ const DetailModel = () => {
         </Stack>
       </Stack>
       <Stack alignItems="center" spacing={2}>
-        {listIngredients?.map((element: any, index) => (
+        {model?.ingredients?.map((element: any, index) => (
           <Box
             sx={{
               width: "20vw",

@@ -1,5 +1,4 @@
 import axios from "axios";
-import { useState } from "react";
 
 const globalUrl = "http://localhost:3001/api/user";
 

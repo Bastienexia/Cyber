@@ -1,10 +1,17 @@
 import axios from "axios";
 
 const globalUrl = "http://localhost:3002/api/ingredient";
+const token = localStorage.getItem("accessToken");
+
+let config = {
+  headers: {
+    authorization: token,
+  },
+};
 
 export function getAllIngredients(setIngredient: any): any {
-  axios
-    .get(globalUrl + "/getAllIngredients")
+  axios //@ts-ignore
+    .get(globalUrl + "/getAllIngredients", config)
     .then((response) => {
       setIngredient(response?.data);
     })
@@ -14,8 +21,8 @@ export function getAllIngredients(setIngredient: any): any {
 }
 
 export const getIngredient: any = (name: string, setIngredient: any) => {
-  axios
-    .get(globalUrl + "/getIngredient/" + name)
+  axios //@ts-ignore
+    .get(globalUrl + "/getIngredient/" + name, config)
     .then((response) => {
       setIngredient(response?.data);
     })
@@ -23,22 +30,22 @@ export const getIngredient: any = (name: string, setIngredient: any) => {
 };
 
 export const createIngredient: any = (ingredient: object) => {
-  axios
-    .post(globalUrl + "/createIngredient", ingredient)
+  axios //@ts-ignore
+    .post(globalUrl + "/createIngredient", ingredient, config)
     .then((response) => console.log(response))
     .catch((error) => console.log(error));
 };
 
 export const editIngredient: any = (name: string, ingredient: object) => {
-  axios
-    .put(globalUrl + "/modify/" + name, ingredient)
+  axios //@ts-ignore
+    .put(globalUrl + "/modify/" + name, ingredient, config)
     .then((response) => console.log(response))
     .catch((error) => console.log(error));
 };
 
 export const deleteIngredient: any = (name: string) => {
-  axios
-    .delete(globalUrl + "/delete/" + name)
+  axios //@ts-ignore
+    .delete(globalUrl + "/delete/" + name, config)
     .then((response) => console.log(response))
     .catch((error) => console.log(error));
 };

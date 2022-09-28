@@ -1,10 +1,17 @@
 import axios from "axios";
 
 const globalUrl = "http://localhost:3003/api/recette";
+const token = localStorage.getItem("accessToken");
+
+let config = {
+  headers: {
+    authorization: token,
+  },
+};
 
 export const createModel: any = (recette: object) => {
-  axios
-    .post(globalUrl + "/createRecette", recette)
+  axios //@ts-ignore
+    .post(globalUrl + "/createRecette", recette, config)
     .then((response) => {
       return response;
     })
@@ -21,8 +28,8 @@ export const getModel: any = (name: string, setModel: any) => {
 };
 
 export const getAllModel: any = (setModel: any) => {
-  axios
-    .get(globalUrl + "/getAllModel")
+  axios //@ts-ignore
+    .get(globalUrl + "/getAllModel", config)
     .then((response) => {
       setModel(response?.data);
     })
@@ -30,8 +37,8 @@ export const getAllModel: any = (setModel: any) => {
 };
 
 export const editModel: any = (name: string, model: object) => {
-  axios
-    .put(globalUrl + "/modify/" + name)
+  axios //@ts-ignore
+    .put(globalUrl + "/modify/" + name, config)
     .then((response) => {
       return response;
     })
@@ -39,8 +46,8 @@ export const editModel: any = (name: string, model: object) => {
 };
 
 export const deleteModel: any = (name: string) => {
-  axios
-    .delete(globalUrl + "/delete/" + name)
+  axios //@ts-ignore
+    .delete(globalUrl + "/delete/" + name, config)
     .then((response) => {
       return response;
     })

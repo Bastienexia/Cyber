@@ -17,13 +17,16 @@ const DetailIngredient = () => {
 
   useEffect(() => {
     //@ts-ignore
-    setIngredientName(ingredient?.name);
+    setIngredientName(ingredient?.NomIngredient);
     //@ts-ignore
-    setIngredientDesc(ingredient?.description);
+    setIngredientDesc(ingredient?.Description);
   }, [ingredient]);
 
   function edit() {
-    editIngredient({ name: ingredientName, description: ingredientDesc });
+    editIngredient(params?.name, {
+      NomIngredient: ingredientName,
+      Description: ingredientDesc,
+    });
   }
 
   return (
@@ -51,10 +54,7 @@ const DetailIngredient = () => {
           variant="contained"
           onClick={() => {
             //@ts-ignore
-            editIngredient(ingredient?.name, {
-              name: ingredientName,
-              description: ingredientDesc,
-            });
+            edit();
             setIsEditing(false);
           }}
         >

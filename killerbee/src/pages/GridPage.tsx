@@ -14,6 +14,7 @@ const GridPage = () => {
       getAllModel(setList);
     } else if (params?.type === "procede") {
       getAllProcede(setList);
+      console.log(list);
     } else if (params?.type === "ingredients") {
       getAllIngredients(setList);
     }
@@ -28,10 +29,17 @@ const GridPage = () => {
         <Link to={"/create/" + params?.type}>
           <Button variant="contained">Nouveau</Button>
         </Link>
-        <Grid container spacing={3}>
+        <Grid container spacing={3} sx={{ width: "80vw", marginleft: "10vw" }}>
           {list?.map((element: any) => (
-            <Link to={"/detail/" + params?.type + "/" + element?.name}>
-              <Grid item key={element?.name}>
+            <Link
+              to={
+                "/detail/" +
+                params?.type +
+                "/" +
+                (element.NomIngredient || element.name || element)
+              }
+            >
+              <Grid item key={element.NomIngredient || element.name || element}>
                 <Box
                   sx={{
                     width: "20vw",
@@ -39,12 +47,14 @@ const GridPage = () => {
                     borderRadius: "1vh",
                     cursor: "pointer",
                   }}
-                  key={element?.name}
+                  key={element}
                 >
-                  <Typography key={element?.name} variant="h6">
-                    {element?.name}
+                  <Typography
+                    key={element.NomIngredient || element.name || element}
+                    variant="h6"
+                  >
+                    {element.NomIngredient || element.name || element}
                   </Typography>
-                  <p key={element?.name}>{element?.description}</p>
                 </Box>
               </Grid>
             </Link>

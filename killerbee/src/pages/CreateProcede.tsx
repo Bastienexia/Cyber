@@ -21,10 +21,16 @@ const CreateProcede = () => {
   const [allModel, setAllModel] = useState([]);
 
   function create() {
+    let IdModel = 0;
+    allModel.map((temp: any) => {
+      if (temp.name === model) {
+        IdModel = parseInt(temp.IdModel);
+      }
+    });
     const procede = {
       name: name,
       description: description,
-      modele_freezbe: model,
+      IdModel: IdModel,
       tests: test,
     };
     createProcede(procede);
@@ -33,6 +39,10 @@ const CreateProcede = () => {
   useEffect(() => {
     getAllModel(setAllModel);
   }, []);
+
+  useEffect(() => {
+    console.log(allModel);
+  }, [allModel]);
 
   return (
     <Stack alignItems="center">

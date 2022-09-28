@@ -1,6 +1,6 @@
 import React from "react";
 import { useState } from "react";
-import { Stack, Box, TextField, Button, Typography } from "@mui/material";
+import { Stack, TextField, Button, Typography } from "@mui/material";
 import { createIngredient } from "../api/index";
 
 const CreateIngredient = () => {
@@ -8,7 +8,7 @@ const CreateIngredient = () => {
   const [description, setDescription] = useState("");
 
   function create() {
-    const ingredient = { name: name, description: description };
+    const ingredient = { NomIngredient: name, Description: description };
     createIngredient(ingredient);
   }
 

@@ -1,10 +1,17 @@
 import axios from "axios";
 
 const globalUrl = "http://localhost:3004/api/procede";
+const token = localStorage.getItem("accessToken");
+
+let config = {
+  headers: {
+    authorization: token,
+  },
+};
 
 export const createProcede: any = (procede: object) => {
-  axios
-    .post(globalUrl + "/createprocede", procede)
+  axios //@ts-ignore
+    .post(globalUrl + "/createprocede", procede, config)
     .then((response) => {
       return response;
     })
@@ -12,8 +19,8 @@ export const createProcede: any = (procede: object) => {
 };
 
 export const getProcede: any = (name: string, setProcede: any) => {
-  axios
-    .get(globalUrl + "/getprocede/" + name)
+  axios //@ts-ignore
+    .get(globalUrl + "/getprocede/" + name, config)
     .then((response) => {
       setProcede(response?.data);
     })
@@ -21,8 +28,8 @@ export const getProcede: any = (name: string, setProcede: any) => {
 };
 
 export const getAllProcede: any = (setProcede: any) => {
-  axios
-    .get(globalUrl + "/getAllProcede")
+  axios //@ts-ignore
+    .get(globalUrl + "/getAllProcede", config)
     .then((response) => {
       setProcede(response?.data);
     })
@@ -30,8 +37,8 @@ export const getAllProcede: any = (setProcede: any) => {
 };
 
 export const editProcede: any = (name: string, procede: object) => {
-  axios
-    .put(globalUrl + "/modify/" + name)
+  axios //@ts-ignore
+    .put(globalUrl + "/modify/" + name, config)
     .then((response) => {
       return response;
     })
@@ -39,8 +46,8 @@ export const editProcede: any = (name: string, procede: object) => {
 };
 
 export const deleteProcede: any = (name: string) => {
-  axios
-    .delete(globalUrl + "/delete/" + name)
+  axios //@ts-ignore
+    .delete(globalUrl + "/delete/" + name, config)
     .then((response) => {
       return response;
     })

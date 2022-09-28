@@ -21,7 +21,7 @@ const CreateModel = () => {
   const [description, setDescription] = useState("");
   const [puht, setPuht] = useState("");
   const [gamme, setGamme] = useState("");
-  const [ingredientsName, setIngredientsName] = useState("");
+  const [ingredientsId, setIngredientsId] = useState("");
   const [ingredientsGrammage, setIngredientsGrammage] = useState("");
 
   const [allIngredients, setAllIngredients] = useState([]);
@@ -37,28 +37,35 @@ const CreateModel = () => {
   }, []);
 
   function addIngredient() {
+    let IdIngredient = 0;
+    allIngredients.map((ingredient: any) => {
+      console.log(ingredient);
+      if (ingredient?.NomIngredient === ingredientsId) {
+        IdIngredient = parseInt(ingredient.IdIngredient);
+      }
+    });
     modelIngredients.push({
-      name: ingredientsName,
+      IdIngredient: IdIngredient,
       grammage: ingredientsGrammage,
     });
-    setIngredientsName("");
+    setIngredientsId("");
     setIngredientsGrammage("");
   }
 
   function create() {
     const model = {
       name: name,
-      description: description,
+      Description: description,
       puht: puht,
-      gamme: gamme,
+      Gamme: gamme,
       ingredients: listIngredients,
     };
-    createModel(model);
+    createModel({ model: model, ingredients: listIngredients });
   }
 
   function deleteIngredient(index: any) {
     modelIngredients.splice(index, 1);
-    setIngredientsName("");
+    setIngredientsId("");
   }
 
   return (
@@ -113,14 +120,16 @@ const CreateModel = () => {
                 labelId="demo-simple-select-filled-label"
                 id="demo-simple-select-filled"
                 label="Ingrédient"
-                value={ingredientsName}
+                value={ingredientsId}
                 onChange={(e: SelectChangeEvent) =>
-                  setIngredientsName(e?.target?.value)
+                  setIngredientsId(e?.target?.value)
                 }
                 sx={{ width: "14vw" }}
               >
                 {allIngredients?.map((element: any) => (
-                  <MenuItem value={element.name}>{element.name}</MenuItem>
+                  <MenuItem value={element.NomIngredient}>
+                    {element.NomIngredient}
+                  </MenuItem>
                 ))}
               </Select>
             </FormControl>
@@ -156,7 +165,7 @@ const CreateModel = () => {
             onClick={() => deleteIngredient(index)}
           >
             <Typography variant="h5" key={index}>
-              {element?.name}
+              {element?.IdIngredient}
             </Typography>
             <Typography variant="h6" key={index}>
               {element?.grammage}

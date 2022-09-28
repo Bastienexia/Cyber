@@ -1,7 +1,7 @@
 import { Sequelize } from "sequelize";
 
 const sequelize = new Sequelize("cyberuser", "sa", "04e2b2ce80", {
-  host: "192.168.1.15",
+  host: "localhost",
   dialect: "mssql",
 });
 
